@@ -34,30 +34,30 @@ list_remove(struct list *target) {
 
 
 struct list*
-list_first(struct list *list) {
-    while (list->prev != NULL) {
-        list = list->prev;
+list_first(struct list *last) {
+    while (last->prev != NULL) {
+        last = last->prev;
     }
     
-    return list;
+    return last;
 }
 
 struct list*
-list_last(struct list *list) {
-    while (list->next != NULL) {
-        list = list->next;
+list_last(struct list *first) {
+    while (first->next != NULL) {
+        first = first->next;
     }
     
-    return list;
+    return first;
 }
 
 void*
-list_foreach(struct list *list, int (*func) (int, void*), size_t member_offset) {
+list_foreach(struct list *first, int (*func) (int, void*), size_t member_offset) {
     int index;
     struct list **plist;
 
     index = 0;
-    plist = &list;
+    plist = &first;
 
     while (*plist != NULL) {
         void *p = (char *)(*plist) - member_offset;
@@ -73,12 +73,12 @@ list_foreach(struct list *list, int (*func) (int, void*), size_t member_offset) 
 }
 
 int
-list_len(struct list *list) {
+list_len(struct list *first) {
     int len;
     struct list **plist;
 
     len = 0;
-    plist = &list;
+    plist = &first;
 
     while (*plist != NULL) {
         plist = &(*plist)->next;
@@ -89,12 +89,12 @@ list_len(struct list *list) {
 }
 
 struct list*
-list_get(struct list *list, int index) {
+list_get(struct list *first, int index) {
     int i;
     struct list **plist;
 
     i = 0;
-    plist = &list;
+    plist = &first;
 
     while (*plist != NULL) {
         if (i == index) {
@@ -109,6 +109,6 @@ list_get(struct list *list, int index) {
 }
 
 struct list*
-list_remove_at(struct list *list, int index) {
-    return list_remove(list_get(list, index));
+list_remove_at(struct list *first, int index) {
+    return list_remove(list_get(first, index));
 }

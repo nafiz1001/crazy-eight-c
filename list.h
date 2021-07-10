@@ -14,19 +14,19 @@ struct list*
 list_remove(struct list *target);
 
 struct list*
-list_first(struct list *list);
+list_first(struct list *last);
 
 struct list*
-list_last(struct list *list);
+list_last(struct list *first);
 
 void*
-list_foreach(struct list *list, int (*func) (int, void*), size_t member_offset);
+list_foreach(struct list *first, int (*func) (int, void*), size_t member_offset);
 
 int
-list_len(struct list *list);
+list_len(struct list *first);
 
 struct list*
-list_get(struct list *list, int index);
+list_get(struct list *first, int index);
 
 struct list*
-list_remove_at(struct list *list, int index);
+list_remove_at(struct list *first, int index);
