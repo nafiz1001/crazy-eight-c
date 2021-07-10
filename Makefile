@@ -15,4 +15,4 @@ test_list.o: list.h test_list.c
 
 .PHONY: clean
 clean:
-	rm -f *.o test_list main
+	rm -f *.o *.out
