@@ -91,7 +91,7 @@ test_remove() {
     assert(last.prev == NULL);
     assert(last.next == NULL);
 
-    list_remove(&first);
+    assert(list_remove(&first) == &first);
 }
 
 void
@@ -134,7 +134,7 @@ test_remove_at() {
     assert(last.prev == NULL);
     assert(last.next == NULL);
 
-    list_remove_at(&first, 0);
+    assert(list_remove_at(&first, 0) == &first);
 }
 
 void
