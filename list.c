@@ -52,7 +52,25 @@ list_last(struct list *first) {
 }
 
 void*
-list_find(struct list *first, int (*func) (int, void*), size_t member_offset) {
+list_find(struct list *first, int (*func) (void*), size_t member_offset) {
+    struct list **plist;
+
+    plist = &first;
+
+    while (*plist != NULL) {
+        void *p = (char *)(*plist) - member_offset;
+        if (func(p)) {
+            return p;
+        }
+
+        plist = &(*plist)->next;
+    }
+    
+    return NULL;
+}
+
+void*
+list_find_index(struct list *first, int (*func) (int, void*), size_t member_offset) {
     int index;
     struct list **plist;
 
