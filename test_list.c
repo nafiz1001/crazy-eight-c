@@ -138,6 +138,9 @@ test_remove_at() {
     assert(last.next == NULL);
 
     assert(list_remove_at(&first, 0) == &first);
+
+    assert(list_remove_at(&first, 1) == NULL);
+    assert(list_remove_at(&first, -1) == NULL);
 }
 
 void
