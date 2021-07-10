@@ -51,7 +51,7 @@ list_last(struct list *list) {
     return list;
 }
 
-struct list*
+void*
 list_foreach(struct list *list, int (*func) (int, void*), size_t member_offset) {
     int index;
     struct list **plist;
@@ -60,15 +60,16 @@ list_foreach(struct list *list, int (*func) (int, void*), size_t member_offset) 
     plist = &list;
 
     while (*plist != NULL) {
-        if (func(index, (char *)(*plist) - member_offset)) {
-            return *plist;
+        void *p = (char *)(*plist) - member_offset;
+        if (func(index, p)) {
+            return p;
         }
 
         plist = &(*plist)->next;
         ++index;
     }
     
-    return *plist;
+    return NULL;
 }
 
 int

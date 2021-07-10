@@ -174,7 +174,7 @@ test_list_foreach() {
     structs[2].data = -2;
 
     const size_t member_offset = offsetof(struct test_list_foreach_struct, list);
-    assert(list_foreach(&structs[0].list, test_list_foreach_is_minus_two, member_offset) == &structs[2].list);
+    assert(list_foreach(&structs[0].list, test_list_foreach_is_minus_two, member_offset) == &structs[2]);
 }
 
 int
