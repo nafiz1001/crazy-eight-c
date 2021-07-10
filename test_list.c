@@ -153,14 +153,14 @@ test_list_last() {
     assert(list_last(&last) == &last);
 }
 
-struct test_list_find_struct {
-    double data;
+struct test_struct {
+    int data;
     struct list list;
 };
 
 int
 test_list_find_is_minus_two_index(int index, void *ptr) {
-    return ((struct test_list_find_struct *)ptr)->data == -2;
+    return ((struct test_struct *)ptr)->data == -2;
 }
 
 int
@@ -170,7 +170,7 @@ test_list_find_is_minus_two(void *ptr) {
 
 void
 test_list_find() {
-    struct test_list_find_struct structs[3];
+    struct test_struct structs[3];
 
     LIST_INIT_3(&structs[0].list, &structs[1].list, &structs[2].list, ret1, ret2)
 
@@ -178,9 +178,33 @@ test_list_find() {
     structs[1].data = -1;
     structs[2].data = -2;
 
-    const size_t member_offset = offsetof(struct test_list_find_struct, list);
+    const size_t member_offset = offsetof(struct test_struct, list);
     assert(list_find(&structs[0].list, test_list_find_is_minus_two, member_offset) == &structs[2]);
     assert(list_find_index(&structs[0].list, test_list_find_is_minus_two_index, member_offset) == &structs[2]);
+}
+
+void
+test_list_foreach_func(void *ptr) {
+    struct test_struct *p = ptr;
+    p->data = 100;
+}
+
+void
+test_list_foreach() {
+    struct test_struct structs[3];
+
+    LIST_INIT_3(&structs[0].list, &structs[1].list, &structs[2].list, ret1, ret2)
+
+    structs[0].data = 0;
+    structs[1].data = 0;
+    structs[2].data = 0;
+
+    const size_t member_offset = offsetof(struct test_struct, list);
+    list_foreach(&structs[0].list, test_list_foreach_func, member_offset);
+    
+    assert(structs[0].data == 100);
+    assert(structs[1].data == 100);
+    assert(structs[2].data == 100);
 }
 
 int
@@ -195,4 +219,5 @@ main() {
     test_list_first();
     test_list_last();
     test_list_find();
+    test_list_foreach();
 }

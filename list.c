@@ -51,6 +51,18 @@ list_last(struct list *first) {
     return first;
 }
 
+void
+list_foreach(struct list *first, void (*func) (void*), size_t member_offset) {
+    struct list **plist;
+
+    plist = &first;
+
+    while (*plist != NULL) {
+        func((char *)(*plist) - member_offset);
+        plist = &(*plist)->next;
+    }
+}
+
 void*
 list_find(struct list *first, int (*func) (void*), size_t member_offset) {
     struct list **plist;
