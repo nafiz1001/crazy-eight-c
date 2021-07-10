@@ -92,6 +92,8 @@ test_remove() {
     assert(last.next == NULL);
 
     assert(list_remove(&first) == &first);
+    
+    assert(list_remove(NULL) == NULL);
 }
 
 void

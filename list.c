@@ -23,6 +23,10 @@ list_insert(struct list *list, struct list *next) {
 
 struct list*
 list_remove(struct list *target) {
+    if (target == NULL) {
+        return NULL;
+    }
+
     if (target->prev != NULL) target->prev->next = target->next;
     if (target->next != NULL) target->next->prev = target->prev;
     
