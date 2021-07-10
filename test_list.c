@@ -109,6 +109,7 @@ void
 test_list_get() {
     LIST_CREATE_3(first, mid, last, ret1, ret2)
     
+    assert(list_get(&first, -1) == NULL);
     assert(list_get(&first, 0) == &first);
     assert(list_get(&first, 1) == &mid);
     assert(list_get(&first, 2) == &last);
