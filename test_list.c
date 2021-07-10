@@ -153,19 +153,19 @@ test_list_last() {
     assert(list_last(&last) == &last);
 }
 
-struct test_list_foreach_struct {
+struct test_list_find_struct {
     double data;
     struct list list;
 };
 
 int
-test_list_foreach_is_minus_two(int index, void *ptr) {
-    return ((struct test_list_foreach_struct *)ptr)->data == -2;
+test_list_find_is_minus_two(int index, void *ptr) {
+    return ((struct test_list_find_struct *)ptr)->data == -2;
 }
 
 void
-test_list_foreach() {
-    struct test_list_foreach_struct structs[3];
+test_list_find() {
+    struct test_list_find_struct structs[3];
 
     LIST_INIT_3(&structs[0].list, &structs[1].list, &structs[2].list, ret1, ret2)
 
@@ -173,8 +173,8 @@ test_list_foreach() {
     structs[1].data = -1;
     structs[2].data = -2;
 
-    const size_t member_offset = offsetof(struct test_list_foreach_struct, list);
-    assert(list_foreach(&structs[0].list, test_list_foreach_is_minus_two, member_offset) == &structs[2]);
+    const size_t member_offset = offsetof(struct test_list_find_struct, list);
+    assert(list_find(&structs[0].list, test_list_find_is_minus_two, member_offset) == &structs[2]);
 }
 
 int
@@ -188,5 +188,5 @@ main() {
     test_remove_at();
     test_list_first();
     test_list_last();
-    test_list_foreach();
+    test_list_find();
 }

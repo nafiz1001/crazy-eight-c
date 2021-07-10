@@ -20,7 +20,7 @@ struct list*
 list_last(struct list *first);
 
 void*
-list_foreach(struct list *first, int (*func) (int, void*), size_t member_offset);
+list_find(struct list *first, int (*func) (int, void*), size_t member_offset);
 
 int
 list_len(struct list *first);
