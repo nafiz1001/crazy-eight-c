@@ -1,10 +1,10 @@
 CC = gcc # Flag for implicit rules
 
 .PHONY: test
-test: test_list
-	./test_list
+test: test_list.out
+	./test_list.out
 
-test_list: list.o test_list.o
+test_list.out: list.o test_list.o
 	${CC} -o $@ $^
 
 list.o: list.h list.c
