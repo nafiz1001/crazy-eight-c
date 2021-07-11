@@ -1,44 +1,10 @@
 #include <stdio.h>
-#include <stdlib.h>
-#include <assert.h>
 #include <string.h>
 #include <time.h>
-#include <ctype.h>
+#include <stddef.h>
+#include "list.h"
 
 #define WHITESPACE " \t\n\v\f\r"
-
-struct strings {
-    char *data;
-    int len;
-};
-
-void
-strings_init(struct strings *s, char *data) {
-    s->data = data;
-    s->len = 0;
-    
-    char *token = strtok(s->data, WHITESPACE);
-    while (token != NULL) {
-        ++s->len;
-        token = strtok(NULL, WHITESPACE);
-    }
-}
-
-char*
-strings_at(struct strings *s, int index) {
-    assert(index < s->len);
-
-    char *ptr = s->data;
-
-    for (; isspace(*ptr); ++ptr);
-
-    for (int i = 0; i < index; ++i) {
-        for (; *ptr != '\0'; ++ptr);
-        ++ptr;
-    }
-
-    return ptr;
-}
 
 enum suit {
     CLUB,
@@ -66,7 +32,7 @@ enum rank {
 struct card {
     enum suit suit;
     enum rank rank;
-    int player_index;
+    struct list cards;
 };
 
 const char *suit_str[] = {
@@ -92,61 +58,95 @@ const char *rank_str[] = {
     "KING"
 };
 
+void print_card(void *card) {
+    struct card *c = card;
+    printf("  Suit: %-8s Rank: %-5s\n", suit_str[c->suit], rank_str[c->rank]);
+}
+
 struct player {
-    int index;
+    char *id;
+    struct list players;
+    struct list *cards;
 };
+
+struct list* initialize_players(struct player *players, char *player_ids_data) {
+    char *token; 
+    struct list tmp;
+    
+    list_init(&tmp);
+
+    token = strtok(player_ids_data, WHITESPACE); 
+    while (token != NULL) {
+        players->id = token;
+        players->cards = NULL;
+        list_init(&players->players);
+        list_insert_after(list_last(&tmp), &players->players);
+
+        ++players;
+        token = strtok(NULL, WHITESPACE);
+    }
+    
+    return list_insert_after(&tmp, NULL);
+}
 
 int
 main(int argc, char *argv[]) {
     char player_ids_data[256];
 
-    struct strings player_ids;
     struct player players[5];
     struct card cards[4][13];
+    
+    struct list *player_list;
+    struct card *stock_pile;
+    struct card *discard_pile;
+
+    player_list = NULL;
+    stock_pile = NULL;
+    discard_pile = NULL;
 
     // get player ids
     printf("Enter player ids: ");
     fgets(player_ids_data, sizeof(player_ids_data), stdin);
-    strings_init(&player_ids, player_ids_data);
 
-    // initialize players
-    for (int i = 0; i < player_ids.len; ++i) {
-        players[i].index = i;
-    }
+    player_list = initialize_players(players, player_ids_data); 
+    const int player_len = list_len(player_list);
 
     // initialize cards
     for (int s = 0; s < sizeof(cards)/sizeof(cards[0]); ++s) {
         for (int r = 0; r < sizeof(cards[s])/sizeof(cards[s][0]); ++r) {
             cards[s][r].suit = s;
-            cards[s][r].rank = r;
-            cards[s][r].player_index = -1;
+            cards[s][r].rank = r + 1;
+            list_init(&cards[s][r].cards);
         }
     }
 
     srand((unsigned) time(NULL));
 
-    for (int player_index = 0; player_index < player_ids.len; ++player_index) {
+    for (int player_index = 0; player_index < player_len; ++player_index) {
+        struct player *p = GET_LIST_OWNER(list_get(player_list, player_index), struct player, players);
+
         for (int c = 0; c < 5; ++c) {
             for(;;) {
                 int card_index = rand() % sizeof(cards)/sizeof(cards[0][0]);
                 struct card *card = &cards[card_index / 13][card_index % 13];
-                if (card->player_index == -1) {
-                    card->player_index = player_index;
+                
+                if (card->cards.prev == NULL && card->cards.next == NULL) {
+                    if (p->cards == NULL) {
+                        p->cards = &card->cards;
+                    } else {
+                        p->cards = list_insert_before(&card->cards, p->cards);
+                    }
                     break;
                 }
             }
         }
     }
 
-    for (int player_index = 0; player_index < player_ids.len; ++player_index) {
-        printf("--- Player %s (#%d) ---\n", strings_at(&player_ids, player_index), player_index);
-        for (int s = 0; s < sizeof(cards)/sizeof(cards[0]); ++s) {
-            for (int r = 0; r < sizeof(cards[s])/sizeof(cards[s][0]); ++r) {
-                if (cards[s][r].player_index == player_index) {
-                    printf("  Suit: %8s Rank: %5s\n", suit_str[s], rank_str[r]);
-                }
-            }
-        }
+    for (int player_index = 0; player_index < player_len; ++player_index) {
+        struct player *p = GET_LIST_OWNER(list_get(player_list, player_index), struct player, players);
+
+        printf("--- Player %s (#%d) ---\n", p->id, player_index);
+        list_foreach(p->cards, print_card, offsetof(struct card, cards));
     }
 
     return 0;
