@@ -11,12 +11,19 @@
     ret1 = list_insert(pfirst, pmid);\
     ret2 = list_insert(pmid, plast);
 
-
 #define LIST_CREATE_3(first, mid, last, ret1, ret2) \
     struct list first;\
     struct list mid;\
     struct list last;\
     LIST_INIT_3(&first, &mid, &last, ret1, ret2)
+
+#define ASSERT_PREV_MID_RIGHT_AFTER_INSERTIONS(first, mid, last) \
+    assert(first.next == &mid);\
+    assert(first.prev == NULL);\
+    assert(mid.next == &last);\
+    assert(mid.prev == &first);\
+    assert(last.next == NULL);\
+    assert(last.prev == &mid);
 
 void test_init_list() {
     struct list list;
@@ -29,14 +36,25 @@ void test_init_list() {
 void test_list_insert_after() {
     LIST_CREATE_3(first, mid, last, ret1, ret2)
 
-    assert(first.next == &mid);
-    assert(first.prev == NULL);
+    ASSERT_PREV_MID_RIGHT_AFTER_INSERTIONS(first, mid, last);
 
-    assert(mid.next == &last);
-    assert(mid.prev == &first);
+    assert(ret1 == &mid);
+    assert(ret2 == &last);
+}
+
+void test_list_insert_before() {
+    struct list first;
+    struct list mid;
+    struct list last;
+    struct list *ret1;
+    struct list *ret2;
+    list_init(&first);
+    list_init(&mid);
+    list_init(&last);
+    ret1 = list_insert(&mid, &last);
+    ret2 = list_insert(&first, &mid);
     
-    assert(last.next == NULL);
-    assert(last.prev == &mid);
+    ASSERT_PREV_MID_RIGHT_AFTER_INSERTIONS(first, mid, last);
 
     assert(ret1 == &mid);
     assert(ret2 == &last);
@@ -54,14 +72,7 @@ void test_list_insert_between() {
     ret1 = list_insert(&first, &last);
     ret2 = list_insert(&first, &mid);
 
-    assert(first.next == &mid);
-    assert(first.prev == NULL);
-
-    assert(mid.next == &last);
-    assert(mid.prev == &first);
-    
-    assert(last.next == NULL);
-    assert(last.prev == &mid);
+    ASSERT_PREV_MID_RIGHT_AFTER_INSERTIONS(first, mid, last);
 
     assert(ret1 == &last);
     assert(ret2 == &mid);
@@ -181,6 +192,7 @@ void test_list_foreach() {
 int main() {
     test_init_list();
     test_list_insert_after();
+    test_list_insert_before();
     test_list_insert_between();
     test_list_split();
     test_remove();
