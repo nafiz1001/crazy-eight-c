@@ -8,8 +8,8 @@
     list_init(pfirst);\
     list_init(pmid);\
     list_init(plast);\
-    ret1 = list_insert_after(pfirst, pmid);\
-    ret2 = list_insert_after(pmid, plast);
+    ret1 = list_insert_after(pfirst, plast);\
+    ret2 = list_insert_after(pfirst, pmid);
 
 #define LIST_CREATE_3(first, mid, last, ret1, ret2) \
     struct list first;\
@@ -38,8 +38,8 @@ void test_list_insert_after() {
 
     ASSERT_PREV_MID_RIGHT_AFTER_INSERTIONS(first, mid, last);
 
-    assert(ret1 == &mid);
-    assert(ret2 == &last);
+    assert(ret1 == &last);
+    assert(ret2 == &mid);
 }
 
 void test_list_insert_before() {
@@ -51,13 +51,13 @@ void test_list_insert_before() {
     list_init(&first);
     list_init(&mid);
     list_init(&last);
-    ret1 = list_insert_before(&mid, &last);
-    ret2 = list_insert_before(&first, &mid);
+    ret1 = list_insert_before(&first, &last);
+    ret2 = list_insert_before(&mid, &last);
     
     ASSERT_PREV_MID_RIGHT_AFTER_INSERTIONS(first, mid, last);
 
-    assert(ret1 == &mid);
-    assert(ret2 == &first);
+    assert(ret1 == &first);
+    assert(ret2 == &mid);
 }
 
 void test_list_insert_between() {
