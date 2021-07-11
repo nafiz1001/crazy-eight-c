@@ -1,5 +1,7 @@
 #include <stdlib.h>
 
+#define GET_LIST_OWNER(plist, type, member) (type*)((char *)plist - offsetof(type, member))
+
 struct list {
     struct list *next, *prev;
 };
