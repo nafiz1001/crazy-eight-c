@@ -114,29 +114,6 @@ void test_list_get() {
     assert(list_get(&first, 2) == &last);
 }
 
-void test_remove_at() {
-    LIST_CREATE_3(first, mid, last, ret1, ret2)
-
-    list_remove_at(&first, 1);
-    assert(first.next == &last);
-    assert(first.prev == NULL);
-
-    assert(mid.next == NULL);
-    assert(mid.prev == NULL);
-
-    assert(last.prev == &first);
-    assert(last.next == NULL);
-
-    list_remove_at(&first, 1);
-    assert(first.next == NULL);
-    assert(first.prev == NULL);
-
-    assert(last.prev == NULL);
-    assert(last.next == NULL);
-
-    assert(list_remove_at(&first, 0) == &first);
-}
-
 void test_list_first() {
     LIST_CREATE_3(first, mid, last, ret1, ret2)
     
@@ -209,7 +186,6 @@ int main() {
     test_remove();
     test_list_len();
     test_list_get();
-    test_remove_at();
     test_list_first();
     test_list_last();
     test_list_find();

@@ -23,5 +23,3 @@ void* list_find_index(struct list *first, int (*func) (int, void*), size_t membe
 int list_len(struct list *first);
 
 struct list* list_get(struct list *first, int index);
-
-struct list* list_remove_at(struct list *first, int index);

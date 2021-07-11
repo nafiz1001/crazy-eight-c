@@ -166,9 +166,3 @@ struct list* list_get(struct list *first, int index) {
     
     return NULL;
 }
-
-struct list* list_remove_at(struct list *first, int index) {
-    assert(first != NULL);
-    assert(index >= 0);
-    return list_remove(list_get(first, index));
-}
