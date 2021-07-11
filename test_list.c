@@ -40,6 +40,10 @@ void test_list_insert_after() {
 
     assert(ret1 == &last);
     assert(ret2 == &mid);
+
+    assert(list_insert_after(&first, NULL) == &mid);
+    assert(first.next == NULL);
+    assert(mid.prev == NULL);
 }
 
 void test_list_insert_before() {
@@ -58,6 +62,10 @@ void test_list_insert_before() {
 
     assert(ret1 == &first);
     assert(ret2 == &mid);
+
+    assert(list_insert_before(NULL, &last) == &mid);
+    assert(mid.next == NULL);
+    assert(last.prev == NULL);
 }
 
 void test_list_insert_between() {
@@ -70,18 +78,10 @@ void test_list_insert_between() {
     list_insert_between(&first, &mid, &last);
 
     ASSERT_PREV_MID_RIGHT_AFTER_INSERTIONS(first, mid, last);
-}
-
-void test_list_split() {
-    LIST_CREATE_3(first, mid, last, ret1, ret2);
-
-    assert(list_insert_after(&first, NULL) == &mid);
+    
+    list_insert_between(&first, NULL, &mid);
     assert(first.next == NULL);
     assert(mid.prev == NULL);
-
-    assert(list_insert_before(NULL, &last) == &mid);
-    assert(mid.next == NULL);
-    assert(last.prev == NULL);
 }
 
 void test_remove() {
@@ -188,7 +188,6 @@ int main() {
     test_list_insert_after();
     test_list_insert_before();
     test_list_insert_between();
-    test_list_split();
     test_remove();
     test_list_len();
     test_list_get();
