@@ -3,6 +3,7 @@
         "compare": "c",
         "type_traits": "c",
         "typeinfo": "c",
-        "stddef.h": "c"
+        "stddef.h": "c",
+        "limits": "c"
     }
 }
