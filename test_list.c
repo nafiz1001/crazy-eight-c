@@ -67,13 +67,13 @@ void test_list_insert_between() {
     assert(ret2 == &mid);
 }
 
-void test_list_insert_null() {
+void test_list_split() {
     LIST_CREATE_3(first, mid, last, ret1, ret2)
 
     assert(list_insert(&first, NULL) == &mid);
     assert(first.next == NULL);
     assert(mid.prev == NULL);
-    
+
     assert(list_insert(NULL, &last) == &mid);
     assert(mid.next == NULL);
     assert(last.prev == NULL);
@@ -205,7 +205,7 @@ int main() {
     test_init_list();
     test_list_insert_after();
     test_list_insert_between();
-    test_list_insert_null();
+    test_list_split();
     test_remove();
     test_list_len();
     test_list_get();
