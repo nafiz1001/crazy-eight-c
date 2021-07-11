@@ -16,9 +16,9 @@ void __list_insert_between(struct list *prev, struct list *mid, struct list *nex
 }
 
 struct list*
-list_insert(struct list *list, struct list *next) {
-    __list_insert_between(list, next, list->next);
-    return next;
+list_insert(struct list *prev, struct list *mid) {
+    __list_insert_between(prev, mid, prev->next);
+    return mid;
 }
 
 struct list*
