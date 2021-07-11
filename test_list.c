@@ -133,12 +133,12 @@ struct test_struct {
     struct list list;
 };
 
-int test_list_find_is_minus_two_index(int index, void *ptr) {
-    return ((struct test_struct *)ptr)->data == -2;
+int is_minus_two_index(int index, void *ptr) {
+    return ((struct test_struct *)ptr)->data == -2 && index == 2;
 }
 
-int test_list_find_is_minus_two(void *ptr) {
-    return test_list_find_is_minus_two_index(0, ptr);
+int is_minus_two(void *ptr) {
+    return ((struct test_struct *)ptr)->data == -2;
 }
 
 void test_list_find() {
@@ -151,8 +151,8 @@ void test_list_find() {
     structs[2].data = -2;
 
     const size_t member_offset = offsetof(struct test_struct, list);
-    assert(list_find(&structs[0].list, test_list_find_is_minus_two, member_offset) == &structs[2]);
-    assert(list_find_index(&structs[0].list, test_list_find_is_minus_two_index, member_offset) == &structs[2]);
+    assert(list_find(&structs[0].list, is_minus_two, member_offset) == &structs[2]);
+    assert(list_find_index(&structs[0].list, is_minus_two_index, member_offset) == &structs[2]);
 }
 
 void
