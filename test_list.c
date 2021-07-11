@@ -15,7 +15,7 @@
     struct list first;\
     struct list mid;\
     struct list last;\
-    LIST_INIT_3(&first, &mid, &last, ret1, ret2)
+    LIST_INIT_3(&first, &mid, &last, ret1, ret2);
 
 #define ASSERT_PREV_MID_RIGHT_AFTER_INSERTIONS(first, mid, last) \
     assert(first.next == &mid);\
@@ -34,7 +34,7 @@ void test_init_list() {
 }
 
 void test_list_insert_after() {
-    LIST_CREATE_3(first, mid, last, ret1, ret2)
+    LIST_CREATE_3(first, mid, last, ret1, ret2);
 
     ASSERT_PREV_MID_RIGHT_AFTER_INSERTIONS(first, mid, last);
 
@@ -74,7 +74,7 @@ void test_list_insert_between() {
 }
 
 void test_list_split() {
-    LIST_CREATE_3(first, mid, last, ret1, ret2)
+    LIST_CREATE_3(first, mid, last, ret1, ret2);
 
     assert(list_insert_after(&first, NULL) == &mid);
     assert(first.next == NULL);
@@ -86,7 +86,7 @@ void test_list_split() {
 }
 
 void test_remove() {
-    LIST_CREATE_3(first, mid, last, ret1, ret2)
+    LIST_CREATE_3(first, mid, last, ret1, ret2);
 
     list_remove(&mid);
     assert(first.next == &last);
@@ -105,7 +105,7 @@ void test_remove() {
 }
 
 void test_list_len() {
-    LIST_CREATE_3(first, mid, last, ret1, ret2)
+    LIST_CREATE_3(first, mid, last, ret1, ret2);
     
     assert(list_len(&first) == 3);
     assert(list_len(&mid) == 2);
@@ -113,7 +113,7 @@ void test_list_len() {
 }
 
 void test_list_get() {
-    LIST_CREATE_3(first, mid, last, ret1, ret2)
+    LIST_CREATE_3(first, mid, last, ret1, ret2);
     
     assert(list_get(&first, 0) == &first);
     assert(list_get(&first, 1) == &mid);
@@ -121,14 +121,14 @@ void test_list_get() {
 }
 
 void test_list_first() {
-    LIST_CREATE_3(first, mid, last, ret1, ret2)
+    LIST_CREATE_3(first, mid, last, ret1, ret2);
     
     assert(list_first(&last) == &first);
     assert(list_first(&first) == &first);
 }
 
 void test_list_last() {
-    LIST_CREATE_3(first, mid, last, ret1, ret2)
+    LIST_CREATE_3(first, mid, last, ret1, ret2);
     
     assert(list_last(&first) == &last);
     assert(list_last(&last) == &last);
@@ -150,7 +150,7 @@ int is_minus_two(void *ptr) {
 void test_list_find() {
     struct test_struct structs[3];
 
-    LIST_INIT_3(&structs[0].list, &structs[1].list, &structs[2].list, ret1, ret2)
+    LIST_INIT_3(&structs[0].list, &structs[1].list, &structs[2].list, ret1, ret2);
 
     structs[0].data = -0;
     structs[1].data = -1;
@@ -170,7 +170,7 @@ test_list_foreach_func(void *ptr) {
 void test_list_foreach() {
     struct test_struct structs[3];
 
-    LIST_INIT_3(&structs[0].list, &structs[1].list, &structs[2].list, ret1, ret2)
+    LIST_INIT_3(&structs[0].list, &structs[1].list, &structs[2].list, ret1, ret2);
 
     structs[0].data = 0;
     structs[1].data = 0;
