@@ -1,7 +1,10 @@
 #include "list.h"
+#include <assert.h>
 
 struct list*
 list_init(struct list *list) {
+    assert(list != NULL);
+
     list->next = NULL;
     list->prev = NULL;
     
@@ -16,16 +19,31 @@ void __list_insert_between(struct list *prev, struct list *mid, struct list *nex
 }
 
 struct list*
-list_insert(struct list *prev, struct list *mid) {
-    __list_insert_between(prev, mid, prev->next);
-    return mid;
+list_insert(struct list *left, struct list *right) {
+    if (left == NULL) {
+
+        assert(left == NULL && right != NULL);
+        struct list *tmp = right->prev;
+        __list_insert_between(right->prev, NULL, right);
+        return tmp;
+
+    } else if (right == NULL) {
+
+        struct list *tmp = left->next;
+        __list_insert_between(left, NULL, left->next);
+        return tmp;
+
+    } else {
+
+        __list_insert_between(left, right, left->next);
+        return right;
+
+    }
 }
 
 struct list*
 list_remove(struct list *target) {
-    if (target == NULL) {
-        return NULL;
-    }
+    assert(target != NULL);
 
     if (target->prev != NULL) target->prev->next = target->next;
     if (target->next != NULL) target->next->prev = target->prev;
@@ -39,6 +57,8 @@ list_remove(struct list *target) {
 
 struct list*
 list_first(struct list *last) {
+    assert(last != NULL);
+
     while (last->prev != NULL) {
         last = last->prev;
     }
@@ -48,6 +68,8 @@ list_first(struct list *last) {
 
 struct list*
 list_last(struct list *first) {
+    assert(first != NULL);
+
     while (first->next != NULL) {
         first = first->next;
     }
@@ -58,6 +80,9 @@ list_last(struct list *first) {
 void
 list_foreach(struct list *first, void (*func) (void*), size_t member_offset) {
     struct list **plist;
+
+    assert(first != NULL);
+    assert(func != NULL);
 
     plist = &first;
 
@@ -70,6 +95,9 @@ list_foreach(struct list *first, void (*func) (void*), size_t member_offset) {
 void*
 list_find(struct list *first, int (*func) (void*), size_t member_offset) {
     struct list **plist;
+
+    assert(first != NULL);
+    assert(func != NULL);
 
     plist = &first;
 
@@ -89,6 +117,9 @@ void*
 list_find_index(struct list *first, int (*func) (int, void*), size_t member_offset) {
     int index;
     struct list **plist;
+
+    assert(first != NULL);
+    assert(func != NULL);
 
     index = 0;
     plist = &first;
@@ -111,6 +142,8 @@ list_len(struct list *first) {
     int len;
     struct list **plist;
 
+    assert(first != NULL);
+
     len = 0;
     plist = &first;
 
@@ -127,22 +160,29 @@ list_get(struct list *first, int index) {
     int i;
     struct list **plist;
 
+    assert(first != NULL);
+    assert(index >= 0);
+
     i = 0;
     plist = &first;
 
     while (*plist != NULL) {
         if (i == index) {
-            break;
+            return *plist;
         }
         
         plist = &(*plist)->next;
         ++i;
     }
     
-    return *plist;
+    assert(index < list_len(first));
+    
+    return NULL;
 }
 
 struct list*
 list_remove_at(struct list *first, int index) {
+    assert(first != NULL);
+    assert(index >= 0);
     return list_remove(list_get(first, index));
 }
