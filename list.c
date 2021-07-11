@@ -11,10 +11,31 @@ struct list* list_init(struct list *list) {
 }
 
 void list_insert_between(struct list *prev, struct list *mid, struct list *next) {
-    if (prev != NULL) prev->next = mid;
-    if (mid  != NULL) mid->prev = prev;
-    if (mid  != NULL) mid->next = next;
-    if (next != NULL) next->prev = mid;
+    if (prev != NULL) { 
+        if (prev->next != NULL) {
+            prev->next->prev = NULL;
+        }
+        prev->next = mid;
+    }
+
+    if (mid != NULL) {
+        if (mid->prev != NULL) {
+            mid->prev->next = NULL;
+        }
+        mid->prev  = prev;
+
+        if (mid->next != NULL) {
+            mid->next->prev = NULL;
+        }
+        mid->next  = next;
+    }
+
+    if (next != NULL) {
+        if (next->prev != NULL) {
+            next->prev->next = NULL;
+        }
+        next->prev = mid;
+    }
 }
 
 struct list* list_insert_after(struct list *before, struct list *after) {

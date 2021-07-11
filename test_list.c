@@ -81,7 +81,11 @@ void test_list_insert_between() {
     
     list_insert_between(&first, NULL, &mid);
     assert(first.next == NULL);
-    assert(mid.prev == NULL);
+    assert(mid.prev   == NULL);
+
+    list_insert_between(NULL, NULL, &last);
+    assert(last.prev == NULL);
+    assert(mid.next  == NULL);
 }
 
 void test_remove() {
