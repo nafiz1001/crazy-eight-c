@@ -6,7 +6,7 @@ struct list {
 
 struct list* list_init(struct list *list);
 
-struct list* list_insert(struct list *list, struct list *next);
+struct list* list_insert(struct list *left, struct list *right);
 
 struct list* list_remove(struct list *target);
 
