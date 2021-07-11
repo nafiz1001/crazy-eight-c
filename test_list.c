@@ -70,6 +70,15 @@ test_list_insert_between() {
     assert(ret2 == &mid);
 }
 
+void 
+test_list_insert_null() {
+    LIST_CREATE_3(first, mid, last, ret1, ret2)
+
+    assert(list_insert(&first, NULL) == NULL);
+    assert(first.next == NULL);
+    assert(mid.prev == NULL);
+}
+
 void
 test_remove() {
     LIST_CREATE_3(first, mid, last, ret1, ret2)
@@ -92,8 +101,6 @@ test_remove() {
     assert(last.next == NULL);
 
     assert(list_remove(&first) == &first);
-    
-    assert(list_remove(NULL) == NULL);
 }
 
 void
@@ -218,6 +225,7 @@ main() {
     test_init_list();
     test_list_insert_after();
     test_list_insert_between();
+    test_list_insert_null();
     test_remove();
     test_list_len();
     test_list_get();

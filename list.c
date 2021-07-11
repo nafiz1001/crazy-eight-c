@@ -10,8 +10,8 @@ list_init(struct list *list) {
 
 void __list_insert_between(struct list *prev, struct list *mid, struct list *next) {
     if (prev != NULL) prev->next = mid;
-    mid->prev = prev;
-    mid->next = next;
+    if (mid  != NULL) mid->prev = prev;
+    if (mid  != NULL) mid->next = next;
     if (next != NULL) next->prev = mid;
 }
 
