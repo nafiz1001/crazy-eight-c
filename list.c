@@ -10,7 +10,7 @@ struct list* list_init(struct list *list) {
     return list;
 }
 
-void __list_insert_between(struct list *prev, struct list *mid, struct list *next) {
+void list_insert_between(struct list *prev, struct list *mid, struct list *next) {
     if (prev != NULL) prev->next = mid;
     if (mid  != NULL) mid->prev = prev;
     if (mid  != NULL) mid->next = next;
@@ -22,10 +22,10 @@ struct list* list_insert_after(struct list *before, struct list *after) {
 
     if (after == NULL) {
         struct list *tmp = before->next;
-        __list_insert_between(before, NULL, before->next);
+        list_insert_between(before, NULL, before->next);
         return tmp;
     } else {
-        __list_insert_between(before, after, before->next);
+        list_insert_between(before, after, before->next);
         return after;
     }
 }
@@ -35,10 +35,10 @@ struct list* list_insert_before(struct list *before, struct list *after) {
 
     if (before == NULL) {
         struct list *tmp = after->prev;
-        __list_insert_between(after->prev, NULL, after);
+        list_insert_between(after->prev, NULL, after);
         return tmp;
     } else {
-        __list_insert_between(after->prev, before, after);
+        list_insert_between(after->prev, before, after);
         return before;
     }
 }

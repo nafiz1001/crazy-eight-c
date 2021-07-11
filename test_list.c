@@ -67,8 +67,7 @@ void test_list_insert_between() {
     list_init(&first);
     list_init(&mid);
     list_init(&last);
-    list_insert_after(&first, &last);
-    list_insert_after(&first, &mid);
+    list_insert_between(&first, &mid, &last);
 
     ASSERT_PREV_MID_RIGHT_AFTER_INSERTIONS(first, mid, last);
 }

@@ -6,6 +6,8 @@ struct list {
 
 struct list* list_init(struct list *list);
 
+void list_insert_between(struct list *prev, struct list *mid, struct list *next);
+
 struct list* list_insert_after(struct list *before, struct list *after);
 
 struct list* list_insert_before(struct list *before, struct list *after);
