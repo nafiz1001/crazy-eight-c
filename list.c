@@ -1,8 +1,7 @@
 #include "list.h"
 #include <assert.h>
 
-struct list*
-list_init(struct list *list) {
+struct list* list_init(struct list *list) {
     assert(list != NULL);
 
     list->next = NULL;
@@ -18,8 +17,7 @@ void __list_insert_between(struct list *prev, struct list *mid, struct list *nex
     if (next != NULL) next->prev = mid;
 }
 
-struct list*
-list_insert(struct list *left, struct list *right) {
+struct list* list_insert(struct list *left, struct list *right) {
     if (left == NULL) {
 
         assert(left == NULL && right != NULL);
@@ -41,8 +39,7 @@ list_insert(struct list *left, struct list *right) {
     }
 }
 
-struct list*
-list_remove(struct list *target) {
+struct list* list_remove(struct list *target) {
     assert(target != NULL);
 
     if (target->prev != NULL) target->prev->next = target->next;
@@ -55,8 +52,7 @@ list_remove(struct list *target) {
 }
 
 
-struct list*
-list_first(struct list *last) {
+struct list* list_first(struct list *last) {
     assert(last != NULL);
 
     while (last->prev != NULL) {
@@ -66,8 +62,7 @@ list_first(struct list *last) {
     return last;
 }
 
-struct list*
-list_last(struct list *first) {
+struct list* list_last(struct list *first) {
     assert(first != NULL);
 
     while (first->next != NULL) {
@@ -77,8 +72,7 @@ list_last(struct list *first) {
     return first;
 }
 
-void
-list_foreach(struct list *first, void (*func) (void*), size_t member_offset) {
+void list_foreach(struct list *first, void (*func) (void*), size_t member_offset) {
     struct list **plist;
 
     assert(first != NULL);
@@ -92,8 +86,7 @@ list_foreach(struct list *first, void (*func) (void*), size_t member_offset) {
     }
 }
 
-void*
-list_find(struct list *first, int (*func) (void*), size_t member_offset) {
+void* list_find(struct list *first, int (*func) (void*), size_t member_offset) {
     struct list **plist;
 
     assert(first != NULL);
@@ -113,8 +106,7 @@ list_find(struct list *first, int (*func) (void*), size_t member_offset) {
     return NULL;
 }
 
-void*
-list_find_index(struct list *first, int (*func) (int, void*), size_t member_offset) {
+void* list_find_index(struct list *first, int (*func) (int, void*), size_t member_offset) {
     int index;
     struct list **plist;
 
@@ -137,8 +129,7 @@ list_find_index(struct list *first, int (*func) (int, void*), size_t member_offs
     return NULL;
 }
 
-int
-list_len(struct list *first) {
+int list_len(struct list *first) {
     int len;
     struct list **plist;
 
@@ -155,8 +146,7 @@ list_len(struct list *first) {
     return len;
 }
 
-struct list*
-list_get(struct list *first, int index) {
+struct list* list_get(struct list *first, int index) {
     int i;
     struct list **plist;
 
@@ -180,8 +170,7 @@ list_get(struct list *first, int index) {
     return NULL;
 }
 
-struct list*
-list_remove_at(struct list *first, int index) {
+struct list* list_remove_at(struct list *first, int index) {
     assert(first != NULL);
     assert(index >= 0);
     return list_remove(list_get(first, index));

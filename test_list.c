@@ -18,8 +18,7 @@
     struct list last;\
     LIST_INIT_3(&first, &mid, &last, ret1, ret2)
 
-void
-test_init_list() {
+void test_init_list() {
     struct list list;
     list_init(&list);
     
@@ -27,8 +26,7 @@ test_init_list() {
     assert(list.prev == NULL);
 }
 
-void 
-test_list_insert_after() {
+void test_list_insert_after() {
     LIST_CREATE_3(first, mid, last, ret1, ret2)
 
     assert(first.next == &mid);
@@ -44,8 +42,7 @@ test_list_insert_after() {
     assert(ret2 == &last);
 }
 
-void 
-test_list_insert_between() {
+void test_list_insert_between() {
     struct list first;
     struct list mid;
     struct list last;
@@ -70,8 +67,7 @@ test_list_insert_between() {
     assert(ret2 == &mid);
 }
 
-void 
-test_list_insert_null() {
+void test_list_insert_null() {
     LIST_CREATE_3(first, mid, last, ret1, ret2)
 
     assert(list_insert(&first, NULL) == &mid);
@@ -83,8 +79,7 @@ test_list_insert_null() {
     assert(last.prev == NULL);
 }
 
-void
-test_remove() {
+void test_remove() {
     LIST_CREATE_3(first, mid, last, ret1, ret2)
 
     list_remove(&mid);
@@ -103,8 +98,7 @@ test_remove() {
     assert(list_remove(&first) == &first);
 }
 
-void
-test_list_len() {
+void test_list_len() {
     LIST_CREATE_3(first, mid, last, ret1, ret2)
     
     assert(list_len(&first) == 3);
@@ -112,8 +106,7 @@ test_list_len() {
     assert(list_len(&last) == 1);
 }
 
-void
-test_list_get() {
+void test_list_get() {
     LIST_CREATE_3(first, mid, last, ret1, ret2)
     
     assert(list_get(&first, 0) == &first);
@@ -121,8 +114,7 @@ test_list_get() {
     assert(list_get(&first, 2) == &last);
 }
 
-void
-test_remove_at() {
+void test_remove_at() {
     LIST_CREATE_3(first, mid, last, ret1, ret2)
 
     list_remove_at(&first, 1);
@@ -145,16 +137,14 @@ test_remove_at() {
     assert(list_remove_at(&first, 0) == &first);
 }
 
-void
-test_list_first() {
+void test_list_first() {
     LIST_CREATE_3(first, mid, last, ret1, ret2)
     
     assert(list_first(&last) == &first);
     assert(list_first(&first) == &first);
 }
 
-void
-test_list_last() {
+void test_list_last() {
     LIST_CREATE_3(first, mid, last, ret1, ret2)
     
     assert(list_last(&first) == &last);
@@ -166,18 +156,15 @@ struct test_struct {
     struct list list;
 };
 
-int
-test_list_find_is_minus_two_index(int index, void *ptr) {
+int test_list_find_is_minus_two_index(int index, void *ptr) {
     return ((struct test_struct *)ptr)->data == -2;
 }
 
-int
-test_list_find_is_minus_two(void *ptr) {
+int test_list_find_is_minus_two(void *ptr) {
     return test_list_find_is_minus_two_index(0, ptr);
 }
 
-void
-test_list_find() {
+void test_list_find() {
     struct test_struct structs[3];
 
     LIST_INIT_3(&structs[0].list, &structs[1].list, &structs[2].list, ret1, ret2)
@@ -197,8 +184,7 @@ test_list_foreach_func(void *ptr) {
     p->data = 100;
 }
 
-void
-test_list_foreach() {
+void test_list_foreach() {
     struct test_struct structs[3];
 
     LIST_INIT_3(&structs[0].list, &structs[1].list, &structs[2].list, ret1, ret2)
@@ -215,8 +201,7 @@ test_list_foreach() {
     assert(structs[2].data == 100);
 }
 
-int
-main() {
+int main() {
     test_init_list();
     test_list_insert_after();
     test_list_insert_between();
