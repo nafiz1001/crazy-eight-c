@@ -18,25 +18,22 @@ void __list_insert_between(struct list *prev, struct list *mid, struct list *nex
 }
 
 struct list* list_insert(struct list *left, struct list *right) {
-    if (left == NULL) {
+    assert(!(left == NULL && right == NULL));
 
-        assert(left == NULL && right != NULL);
+    if (left == NULL) {
         struct list *tmp = right->prev;
         __list_insert_between(right->prev, NULL, right);
         return tmp;
-
-    } else if (right == NULL) {
-
+    }
+    
+    if (right == NULL) {
         struct list *tmp = left->next;
         __list_insert_between(left, NULL, left->next);
         return tmp;
+    } 
 
-    } else {
-
-        __list_insert_between(left, right, left->next);
-        return right;
-
-    }
+    __list_insert_between(left, right, left->next);
+    return right;
 }
 
 struct list* list_remove(struct list *target) {
