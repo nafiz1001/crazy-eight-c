@@ -8,8 +8,8 @@
     list_init(pfirst);\
     list_init(pmid);\
     list_init(plast);\
-    ret1 = list_insert(pfirst, pmid);\
-    ret2 = list_insert(pmid, plast);
+    ret1 = list_insert_after(pfirst, pmid);\
+    ret2 = list_insert_after(pmid, plast);
 
 #define LIST_CREATE_3(first, mid, last, ret1, ret2) \
     struct list first;\
@@ -51,41 +51,36 @@ void test_list_insert_before() {
     list_init(&first);
     list_init(&mid);
     list_init(&last);
-    ret1 = list_insert(&mid, &last);
-    ret2 = list_insert(&first, &mid);
+    ret1 = list_insert_before(&mid, &last);
+    ret2 = list_insert_before(&first, &mid);
     
     ASSERT_PREV_MID_RIGHT_AFTER_INSERTIONS(first, mid, last);
 
     assert(ret1 == &mid);
-    assert(ret2 == &last);
+    assert(ret2 == &first);
 }
 
 void test_list_insert_between() {
     struct list first;
     struct list mid;
     struct list last;
-    struct list *ret1;
-    struct list *ret2;
     list_init(&first);
     list_init(&mid);
     list_init(&last);
-    ret1 = list_insert(&first, &last);
-    ret2 = list_insert(&first, &mid);
+    list_insert_after(&first, &last);
+    list_insert_after(&first, &mid);
 
     ASSERT_PREV_MID_RIGHT_AFTER_INSERTIONS(first, mid, last);
-
-    assert(ret1 == &last);
-    assert(ret2 == &mid);
 }
 
 void test_list_split() {
     LIST_CREATE_3(first, mid, last, ret1, ret2)
 
-    assert(list_insert(&first, NULL) == &mid);
+    assert(list_insert_after(&first, NULL) == &mid);
     assert(first.next == NULL);
     assert(mid.prev == NULL);
 
-    assert(list_insert(NULL, &last) == &mid);
+    assert(list_insert_before(NULL, &last) == &mid);
     assert(mid.next == NULL);
     assert(last.prev == NULL);
 }
