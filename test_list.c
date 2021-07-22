@@ -5,9 +5,9 @@
 #define LIST_INIT_3(pfirst, pmid, plast, ret1, ret2) \
     struct list *ret1;\
     struct list *ret2;\
-    list_init(pfirst);\
-    list_init(pmid);\
-    list_init(plast);\
+    list_init(pfirst, NULL);\
+    list_init(pmid, NULL);\
+    list_init(plast, NULL);\
     ret1 = list_insert_after(pfirst, plast);\
     ret2 = list_insert_after(pfirst, pmid);
 
@@ -27,7 +27,7 @@
 
 void test_init_list() {
     struct list list;
-    list_init(&list);
+    list_init(&list, NULL);
     
     assert(list.next == NULL);
     assert(list.prev == NULL);
@@ -52,9 +52,9 @@ void test_list_insert_before() {
     struct list last;
     struct list *ret1;
     struct list *ret2;
-    list_init(&first);
-    list_init(&mid);
-    list_init(&last);
+    list_init(&first, NULL);
+    list_init(&mid, NULL);
+    list_init(&last, NULL);
     ret1 = list_insert_before(&first, &last);
     ret2 = list_insert_before(&mid, &last);
     
@@ -72,9 +72,9 @@ void test_list_insert_between() {
     struct list first;
     struct list mid;
     struct list last;
-    list_init(&first);
-    list_init(&mid);
-    list_init(&last);
+    list_init(&first, NULL);
+    list_init(&mid, NULL);
+    list_init(&last, NULL);
     list_insert_between(&first, &mid, &last);
 
     ASSERT_PREV_MID_RIGHT_AFTER_INSERTIONS(first, mid, last);
@@ -154,14 +154,18 @@ void test_list_find() {
     struct test_struct structs[3];
 
     LIST_INIT_3(&structs[0].list, &structs[1].list, &structs[2].list, ret1, ret2);
+    
+    structs[0].list.owner = &structs[0];
+    structs[1].list.owner = &structs[1];
+    structs[2].list.owner = &structs[2];
 
     structs[0].data = -0;
     structs[1].data = -1;
     structs[2].data = -2;
 
     const size_t member_offset = offsetof(struct test_struct, list);
-    assert(list_find(&structs[0].list, is_minus_two, member_offset) == &structs[2]);
-    assert(list_find_index(&structs[0].list, is_minus_two_index, member_offset) == &structs[2]);
+    assert(list_find(&structs[0].list, is_minus_two) == &structs[2]);
+    assert(list_find_index(&structs[0].list, is_minus_two_index) == &structs[2]);
 }
 
 void
@@ -175,12 +179,16 @@ void test_list_foreach() {
 
     LIST_INIT_3(&structs[0].list, &structs[1].list, &structs[2].list, ret1, ret2);
 
+    structs[0].list.owner = &structs[0];
+    structs[1].list.owner = &structs[1];
+    structs[2].list.owner = &structs[2];
+
     structs[0].data = 0;
     structs[1].data = 0;
     structs[2].data = 0;
 
     const size_t member_offset = offsetof(struct test_struct, list);
-    list_foreach(&structs[0].list, test_list_foreach_func, member_offset);
+    list_foreach(&structs[0].list, test_list_foreach_func);
     
     assert(structs[0].data == 100);
     assert(structs[1].data == 100);
@@ -190,7 +198,7 @@ void test_list_foreach() {
 void test_list_init_from_array() {
     struct test_struct structs[4];
     assert(
-        list_init_from_array(structs, 4, sizeof(struct test_struct), offsetof(struct test_struct, list))
+        list_init_from_array(&structs[0], &structs[0].list, 4, sizeof(struct test_struct))
         ==
         &structs[0].list
     );

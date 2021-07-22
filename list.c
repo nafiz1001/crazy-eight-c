@@ -1,11 +1,13 @@
 #include "list.h"
 #include <assert.h>
+#include <stdlib.h>
 
-struct list* list_init(struct list *list) {
+struct list* list_init(struct list *list, void *owner) {
     assert(list != NULL);
 
     list->next = NULL;
     list->prev = NULL;
+    list->owner = owner;
     
     return list;
 }
@@ -97,7 +99,7 @@ struct list* list_last(struct list *first) {
     return first;
 }
 
-void list_foreach(struct list *first, void (*func) (void*), size_t member_offset) {
+void list_foreach(struct list *first, void (*func) (void*)) {
     struct list **plist;
 
     assert(first != NULL);
@@ -106,12 +108,12 @@ void list_foreach(struct list *first, void (*func) (void*), size_t member_offset
     plist = &first;
 
     while (*plist != NULL) {
-        func((char *)(*plist) - member_offset);
+        func((*plist)->owner);
         plist = &(*plist)->next;
     }
 }
 
-void* list_find(struct list *first, int (*func) (void*), size_t member_offset) {
+void* list_find(struct list *first, int (*func) (void*)) {
     struct list **plist;
 
     assert(first != NULL);
@@ -120,9 +122,8 @@ void* list_find(struct list *first, int (*func) (void*), size_t member_offset) {
     plist = &first;
 
     while (*plist != NULL) {
-        void *p = (char *)(*plist) - member_offset;
-        if (func(p)) {
-            return p;
+        if (func((*plist)->owner)) {
+            return (*plist)->owner;
         }
 
         plist = &(*plist)->next;
@@ -131,7 +132,7 @@ void* list_find(struct list *first, int (*func) (void*), size_t member_offset) {
     return NULL;
 }
 
-void* list_find_index(struct list *first, int (*func) (int, void*), size_t member_offset) {
+void* list_find_index(struct list *first, int (*func) (int, void*)) {
     int index;
     struct list **plist;
 
@@ -142,9 +143,8 @@ void* list_find_index(struct list *first, int (*func) (int, void*), size_t membe
     plist = &first;
 
     while (*plist != NULL) {
-        void *p = (char *)(*plist) - member_offset;
-        if (func(index, p)) {
-            return p;
+        if (func(index, (*plist)->owner)) {
+            return (*plist)->owner;
         }
 
         plist = &(*plist)->next;
@@ -195,20 +195,42 @@ struct list* list_get(struct list *first, int index) {
     return NULL;
 }
 
-struct list* list_init_from_array(void *first, size_t len, size_t size, size_t member_offset) {
+struct list* list_init_from_array(void *first, struct list *first_list, int len, size_t size) {
     void *iter = first;
 
-    struct list *prev = (struct list *)((char *)iter + member_offset);
-    list_init(prev);
+    struct list *prev = first_list;
+    list_init(prev, first);
 
     for (int i = 1; i < len; ++i) {
         iter = (char *)iter + size;
-        struct list *next = (struct list *)((char *)iter + member_offset);
+        struct list *next = (struct list *)((char *)prev + size);
 
-        list_init(next);
+        list_init(next, iter);
         list_insert_after(prev, next);
         prev = next;
     }
     
-    return (struct list *)((char *)first + member_offset);
+    return first_list;
+}
+
+struct list* list_shuffle(struct list *first, unsigned int seed) {
+    srand(seed);
+    int len = list_len(first);
+
+    struct list *shuffled = NULL;
+
+    while (len > 0) {
+        struct list *next = list_get(first, rand() % len);
+        if (next == first) {
+            first = next->next;
+        }
+
+        if (!shuffled) {
+            shuffled = next;
+        } else {
+            list_insert_after(shuffled, list_remove(next));
+        }
+        
+        --len;
+    }
 }
