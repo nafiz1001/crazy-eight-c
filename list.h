@@ -29,3 +29,6 @@ void* list_find_index(struct list *first, int (*func) (int, void*), size_t membe
 int list_len(struct list *first);
 
 struct list* list_get(struct list *first, int index);
+
+struct list* list_init_from_array(void *first, size_t len, size_t size, size_t member_offset);
+

@@ -187,6 +187,26 @@ void test_list_foreach() {
     assert(structs[2].data == 100);
 }
 
+void test_list_init_from_array() {
+    struct test_struct structs[4];
+    assert(
+        list_init_from_array(structs, 4, sizeof(struct test_struct), offsetof(struct test_struct, list))
+        ==
+        &structs[0].list
+    );
+    
+    assert(structs[0].list.prev == NULL);
+    assert(structs[0].list.next == &structs[1].list);
+    
+    for (int i = 1; i < 3; ++i) {
+        assert(structs[i].list.prev == &structs[i - 1].list);
+        assert(structs[i].list.next == &structs[i + 1].list);
+    }
+    
+    assert(structs[3].list.prev == &structs[2].list);
+    assert(structs[3].list.next == NULL);
+}
+
 int main() {
     test_init_list();
     test_list_insert_after();
@@ -199,4 +219,5 @@ int main() {
     test_list_last();
     test_list_find();
     test_list_foreach();
+    test_list_init_from_array();
 }

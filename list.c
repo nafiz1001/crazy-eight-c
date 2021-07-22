@@ -194,3 +194,21 @@ struct list* list_get(struct list *first, int index) {
     
     return NULL;
 }
+
+struct list* list_init_from_array(void *first, size_t len, size_t size, size_t member_offset) {
+    void *iter = first;
+
+    struct list *prev = (struct list *)((char *)iter + member_offset);
+    list_init(prev);
+
+    for (int i = 1; i < len; ++i) {
+        iter = (char *)iter + size;
+        struct list *next = (struct list *)((char *)iter + member_offset);
+
+        list_init(next);
+        list_insert_after(prev, next);
+        prev = next;
+    }
+    
+    return (struct list *)((char *)first + member_offset);
+}
