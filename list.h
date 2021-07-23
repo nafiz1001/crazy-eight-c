@@ -1,6 +1,7 @@
-#include <stdlib.h>
+#ifndef LIST_H
+#define LIST_H
 
-#define GET_LIST_OWNER(plist, type, member) (type*)((char *)plist - offsetof(type, member))
+#include <stdlib.h>
 
 struct list {
     void *owner;
@@ -34,3 +35,5 @@ struct list* list_get(struct list *first, int index);
 struct list* list_init_from_array(void *first, struct list *first_list, int len, size_t size);
 
 struct list* list_shuffle(struct list *first, unsigned int seed);
+
+#endif
