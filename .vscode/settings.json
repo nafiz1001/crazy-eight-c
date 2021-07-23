@@ -4,6 +4,8 @@
         "type_traits": "c",
         "typeinfo": "c",
         "stddef.h": "c",
-        "limits": "c"
+        "limits": "c",
+        "list.h": "c",
+        "card.h": "c"
     }
 }
