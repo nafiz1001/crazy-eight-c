@@ -1,6 +1,8 @@
 #include "list.h"
 #include <assert.h>
 #include <stdlib.h>
+#include <stdio.h>
+#include "card.h"
 
 struct list* list_init(struct list *list, void *owner) {
     assert(list != NULL);
@@ -215,22 +217,15 @@ struct list* list_init_from_array(void *first, struct list *first_list, int len,
 
 struct list* list_shuffle(struct list *first, unsigned int seed) {
     srand(seed);
-    int len = list_len(first);
-
-    struct list *shuffled = NULL;
-
-    while (len > 0) {
-        struct list *next = list_get(first, rand() % len);
-        if (next == first) {
-            first = next->next;
+    const int len = list_len(first);
+    
+    for (int i = 0; i < len; ++i) {
+        int index = rand() % len;
+        if (index != 0) {
+            struct list *c = list_remove(list_get(first, index));
+            first = list_insert_before(c, first);
         }
-
-        if (!shuffled) {
-            shuffled = next;
-        } else {
-            list_insert_after(shuffled, list_remove(next));
-        }
-        
-        --len;
     }
+    
+    return first;
 }
