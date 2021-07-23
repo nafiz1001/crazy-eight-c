@@ -3,65 +3,9 @@
 #include <time.h>
 #include <stddef.h>
 #include "list.h"
+#include "card.h"
 
 #define WHITESPACE " \t\n\v\f\r"
-
-enum suit {
-    CLUB,
-    DIAMONDS,
-    HEARTS,
-    SPADE
-};
-
-enum rank {
-    ACE = 1,
-    TWO,
-    THREE,
-    FOUR,
-    FIVE,
-    SIX,
-    SEVEN,
-    EIGHT,
-    NINE,
-    TEN,
-    JACK,
-    QUEEN,
-    KING
-};
-
-struct card {
-    enum suit suit;
-    enum rank rank;
-    struct list cards;
-};
-
-const char *suit_str[] = {
-    "CLUB",
-    "DIAMONDS",
-    "HEARTS",
-    "SPADE"
-};
-const char *rank_str[] = {
-    "0",
-    "ACE",
-    "2",
-    "3",
-    "4",
-    "5",
-    "6",
-    "7",
-    "8",
-    "9",
-    "10",
-    "JACK",
-    "QUEEN",
-    "KING"
-};
-
-void print_card(void *card) {
-    struct card *c = card;
-    printf("  Suit: %-8s Rank: %-5s\n", suit_str[c->suit], rank_str[c->rank]);
-}
 
 struct player {
     char *id;
