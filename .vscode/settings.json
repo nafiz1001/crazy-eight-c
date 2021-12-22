@@ -1,11 +1,3 @@
 {
-    "files.associations": {
-        "compare": "c",
-        "type_traits": "c",
-        "typeinfo": "c",
-        "stddef.h": "c",
-        "limits": "c",
-        "list.h": "c",
-        "card.h": "c"
-    }
+    "editor.detectIndentation": false
 }

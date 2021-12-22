@@ -1,84 +1,121 @@
-#include <stdio.h>
-#include <string.h>
-#include <time.h>
-#include <stddef.h>
-#include "list.h"
 #include "card.h"
+#include <stddef.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/queue.h>
+#include <time.h>
 
 #define WHITESPACE " \t\n\v\f\r"
 
 struct player {
-    char *id;
-    struct list players;
-    struct list *cards;
+	const char *id;
+	struct card_head card_head;
+	TAILQ_ENTRY(player) entries;
 };
+TAILQ_HEAD(player_head, player);
 
-struct list* initialize_players(struct player *players, char *player_ids_data) {
-    char *token; 
-    struct list tmp;
-    
-    list_init(&tmp, NULL);
+int main()
+{
+	struct player players_buffer[5];
+	struct card cards_buffer[4][13];
 
-    token = strtok(player_ids_data, WHITESPACE); 
-    while (token != NULL) {
-        players->id = token;
-        players->cards = NULL;
-        list_init(&players->players, players);
-        list_insert_after(list_last(&tmp), &players->players);
+	struct player_head players;
+	struct card_head stock_pile;
+	struct card_head discard_pile;
 
-        ++players;
-        token = strtok(NULL, WHITESPACE);
-    }
-    
-    return list_insert_after(&tmp, NULL);
-}
+	TAILQ_INIT(&players);
+	TAILQ_INIT(&stock_pile);
+	TAILQ_INIT(&discard_pile);
 
-int
-main(int argc, char *argv[]) {
-    char player_ids_data[256];
+	// get player ids
+	printf("Enter player ids:\n");
+	char *player_id = NULL;
+	size_t player_id_len = 0;
+	size_t index = 0;
+	printf("0. ");
+	while (getline(&player_id, &player_id_len, stdin) > 1) {
+		for (size_t i = 0; i < player_id_len; i++) {
+			if (player_id[i] == '\n' || player_id[i] == '\r') {
+				player_id[i] = '\0';
+			}
+		}
 
-    struct player players[5];
-    struct card cards[4][13];
-    
-    struct list *player_list;
-    struct list *stock_pile;
-    struct list *discard_pile;
+		TAILQ_INSERT_TAIL(&players, &players_buffer[index], entries);
+		TAILQ_LAST(&players, player_head)->id = player_id;
+		TAILQ_INIT(&TAILQ_LAST(&players, player_head)->card_head);
 
-    player_list = NULL;
-    stock_pile = NULL;
-    discard_pile = NULL;
+		player_id = NULL;
+		index++;
+		printf("%ld. ", index);
+	}
 
-    // get player ids
-    printf("Enter player ids: ");
-    fgets(player_ids_data, sizeof(player_ids_data), stdin);
+	// initialize cards
+	for (int s = 0; s < 4; ++s) {
+		for (int r = 1; r <= 13; ++r) {
+			cards_buffer[s][r - 1].suit = s;
+			cards_buffer[s][r - 1].rank = r;
+			TAILQ_INSERT_TAIL(&stock_pile, &cards_buffer[s][r - 1],
+					  entries);
+		}
+	}
 
-    player_list = initialize_players(players, player_ids_data); 
-    
-    // initialize cards
-    for (int s = 0; s < 4; ++s) {
-        for (int r = 1; r <= 13; ++r) {
-            cards[s][r - 1].suit = s;
-            cards[s][r - 1].rank = r;
-        }
-    } 
-    
-    stock_pile = list_init_from_array(&cards[0][0], &cards[0][0].cards, 4*13, sizeof(struct card));
-    stock_pile = list_shuffle(stock_pile, time(NULL));
+	srand((unsigned)time(NULL));
 
-    srand((unsigned) time(NULL));
+	for (int j = 0; j < 10; j++) {
+		struct card *card_iter = TAILQ_FIRST(&stock_pile);
+		for (int i = 0; i < 4 * 13; i++) {
+			struct card *card_temp = TAILQ_NEXT(card_iter, entries);
+			if (rand() % 2) {
+				TAILQ_REMOVE(&stock_pile, card_iter, entries);
+				TAILQ_INSERT_TAIL(&stock_pile, card_iter,
+						  entries);
+			}
+			card_iter = card_temp;
+		}
+	}
 
-    for (int player_index = 0; player_index < list_len(player_list); ++player_index) {
-        struct player *p = list_get(player_list, player_index)->owner;
-        p->cards = stock_pile;
-        stock_pile = list_insert_after(list_get(stock_pile, 4), NULL);
-    }
+	struct player *player_iter = NULL;
+	TAILQ_FOREACH(player_iter, &players, entries)
+	{
+		for (int i = 0; i < 4; i++) {
+			struct card *first_card = TAILQ_FIRST(&stock_pile);
+			TAILQ_REMOVE(&stock_pile, first_card, entries);
+			TAILQ_INSERT_TAIL(&player_iter->card_head, first_card,
+					  entries);
+		}
+	}
 
-    for (int player_index = 0; player_index < list_len(player_list); ++player_index) {
-        struct player *p = list_get(player_list, player_index)->owner;
+	player_iter = NULL;
+	index = 0;
+	TAILQ_FOREACH(player_iter, &players, entries)
+	{
+		printf("--- Player %s (#%ld) ---\n", player_iter->id, index);
+		const struct card *card_iter = NULL;
+		size_t card_index = 0;
+		TAILQ_FOREACH(card_iter, &player_iter->card_head, entries)
+		{
+			printf("%ld Suit: %-8s Rank: %-5s\n", card_index,
+			       SUIT_STRING[card_iter->suit],
+			       RANK_STRING[card_iter->rank]);
+			card_index++;
+		}
+		index++;
+	}
+	printf("------------------\n");
 
-        printf("--- Player %s (#%d) ---\n", p->id, player_index);
-        list_foreach(p->cards, print_card);
-    }
+	// player_iter = NULL;
+	// TAILQ_FOREACH(player_iter, &players, entries) {
+	// 	card_iter = NULL;
+	// 	TAILQ_FOREACH(card_iter, &player_iter->card_head, entries) {
+	// 		printf("Suit: %-8s Rank: %-5s\n", SUIT_STRING[card_iter->suit], RANK_STRING[card_iter->rank]);
+	// 	}
+	// }
 
-    return 0;
+	// card_iter = NULL;
+	// TAILQ_FOREACH(card_iter, &stock_pile, entries) {
+	// 	printf("Suit: %-8s Rank: %-5s\n", SUIT_STRING[card_iter->suit], RANK_STRING[card_iter->rank]);
+	// }
+
+	return 0;
 }
